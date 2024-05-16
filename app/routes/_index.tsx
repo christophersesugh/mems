@@ -1,41 +1,37 @@
 import type { MetaFunction } from "@remix-run/node";
+import { Button } from "~/components/ui/button";
+import { Link } from "@remix-run/react";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix App" },
-    { name: "description", content: "Welcome to Remix!" },
+    { title: "MEMS" },
+    { name: "description", content: "Welcome to MEMS" },
   ];
 };
 
 export default function Index() {
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Remix</h1>
-      <ul>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/blog"
-            rel="noreferrer"
+    <>
+      <div className="bg-[url('/memsbg.jpeg')] bg-cover bg-center text-slate-200 min-h-screen">
+        <div className="max-md flex flex-col gap-8 p-12 md:pt-24">
+          <h1 className="text-6xl font-black text-center">MEMS</h1>
+          <p className="text-3xl text-center font-bold">
+            Military equipment management system
+          </p>
+          <Button
+            size="lg"
+            className="text-lg self-center bg-orange-700 uppercase font-bold duration-300"
+            asChild
           >
-            15m Quickstart Blog Tutorial
-          </a>
-        </li>
-        <li>
-          <a
-            target="_blank"
-            href="https://remix.run/tutorials/jokes"
-            rel="noreferrer"
-          >
-            Deep Dive Jokes App Tutorial
-          </a>
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
-    </div>
+            <Link to="/signup">get started</Link>
+          </Button>
+        </div>
+      </div>
+      <div className="text-slate-300 py-8 px-4 bg-blue-950">
+        <h1 className="uppercase font-bold underline underline-offset-2 text-center text-4xl ">
+          About
+        </h1>
+      </div>
+    </>
   );
 }
