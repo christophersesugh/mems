@@ -34,8 +34,7 @@ export default function Index() {
         <p className="text-lg max-w-md mx-auto mt-8">
           MEMS (Military Equipment Maintenance System) is a cutting-edge
           software solution designed to revolutionize the way military equipment
-          maintenance is managed. Developed by a team of experienced engineers
-          and military experts, MEMS is built to streamline maintenance
+          maintenance is managed. MEMS is built to streamline maintenance
           operations, enhance equipment readiness, and ultimately ensure mission
           success.
         </p>
