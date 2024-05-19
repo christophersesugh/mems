@@ -12,7 +12,7 @@ import {
 import { Button } from "../ui/button";
 import { MdDashboard } from "react-icons/md";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import { FaHistory, FaUserCircle } from "react-icons/fa";
+import { FaUserCircle } from "react-icons/fa";
 
 export function RootLayout() {
   const [isNavOpen, setIsNavOpen] = React.useState(false);
@@ -67,12 +67,6 @@ export const authMenuItems = [
     label: "create task",
     href: "/createtask",
   },
-  {
-    icon: <FaHistory size={30} />,
-    label: "history",
-    href: "history",
-  },
-
   {
     icon: <FaUserCircle size={30} />,
     label: "profile",
