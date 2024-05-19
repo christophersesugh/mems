@@ -80,7 +80,7 @@ export default function CreateTaskRoute() {
       <PageTitle title="Create task" />
       <TaskForm
         method="post"
-        action="/createtask"
+        action="/create"
         user={currentUser}
         users={users}
         submitButton={
