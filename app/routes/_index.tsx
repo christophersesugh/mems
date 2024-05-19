@@ -27,10 +27,18 @@ export default function Index() {
           </Button>
         </div>
       </div>
-      <div className="text-slate-300 py-8 px-4 bg-blue-950">
+      <div className="text-slate-300 py-8 px-4 bg-blue-950" id="about">
         <h1 className="uppercase font-bold underline underline-offset-2 text-center text-4xl ">
           About
         </h1>
+        <p className="text-lg max-w-md mx-auto mt-8">
+          MEMS (Military Equipment Maintenance System) is a cutting-edge
+          software solution designed to revolutionize the way military equipment
+          maintenance is managed. Developed by a team of experienced engineers
+          and military experts, MEMS is built to streamline maintenance
+          operations, enhance equipment readiness, and ultimately ensure mission
+          success.
+        </p>
       </div>
     </>
   );

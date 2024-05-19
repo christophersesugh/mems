@@ -53,7 +53,7 @@ export function RootLayout() {
 
 export const menuItems = [
   { label: "home", href: "/" },
-  { label: "about", href: "about" },
+  { label: "about", href: "/#about" },
 ];
 
 export const authMenuItems = [
@@ -65,7 +65,7 @@ export const authMenuItems = [
   {
     icon: <IoMdAddCircleOutline size={30} />,
     label: "create task",
-    href: "/createtask",
+    href: "create",
   },
   {
     icon: <FaUserCircle size={30} />,

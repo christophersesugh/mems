@@ -44,7 +44,7 @@ export function SideBar({
                     disabled={admin(item.href, user.role)}
                   >
                     <Link
-                      to={item.label}
+                      to={item.href}
                       className="flex gap-4 capitalize text-xl w-full items-center"
                     >
                       {item.icon}
