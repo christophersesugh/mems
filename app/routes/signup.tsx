@@ -19,7 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
-import { units } from "~/constants/units";
+import { ranks, units } from "~/constants/units";
 import { prisma } from "~/utils/prisma.server";
 import bcrypt from "bcryptjs";
 
@@ -105,10 +105,11 @@ export default function Signin() {
                     <SelectValue placeholder="Select rank" />
                   </SelectTrigger>
                   <SelectContent position="popper">
-                    <SelectItem value="general">General</SelectItem>
-                    <SelectItem value="colonel">Colonel</SelectItem>
-                    <SelectItem value="l-colonel">L. Colonel</SelectItem>
-                    <SelectItem value="sergent">Sergent</SelectItem>
+                    {ranks.map((rank) => (
+                      <SelectItem key={rank} value={rank}>
+                        {rank}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
