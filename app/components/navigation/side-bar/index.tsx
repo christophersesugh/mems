@@ -14,13 +14,18 @@ export function SideBar({
   menuItems,
   isOpen,
   setIsOpen,
+  user,
   ...props
 }: SideBarProps) {
+  function admin(href: string, role: string) {
+    return href.includes("create") && role === "USER";
+  }
   return (
     <SideBarProvider
       isOpen={isOpen}
       setIsOpen={setIsOpen}
       menuItems={menuItems}
+      user={user}
       {...props}
     >
       <SideBarContainer>
@@ -31,15 +36,16 @@ export function SideBar({
                 <TooltipContent className="text-lg">
                   {item.label}
                 </TooltipContent>
-                <TooltipTrigger asChild>
+                <TooltipTrigger>
                   <Button
                     variant="link"
                     className="text-slate-200 hover:text-white"
-                    asChild
+                    // asChild
+                    disabled={admin(item.href, user.role)}
                   >
                     <Link
                       to={item.label}
-                      className="flex gap-4 capitalize text-xl items-center"
+                      className="flex gap-4 capitalize text-xl w-full items-center"
                     >
                       {item.icon}
                       {isOpen && item.label}

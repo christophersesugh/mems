@@ -1,10 +1,12 @@
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
 
-interface ICurrentUser {
+export interface ICurrentUser {
   userId: string;
   name: string;
   email: string;
+  unit: string;
   rank: string;
+  role: string;
 }
 
 export interface SessionData {

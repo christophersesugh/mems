@@ -9,6 +9,7 @@ import { useSideBar } from "./side-bar-context";
 import { SignOutButton } from "~/components/signout-form";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
+import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 
 export function SideBarContent({ ...props }) {
   const { isOpen, toggleSideBar } = useSideBar();
@@ -24,7 +25,10 @@ export function SideBarContent({ ...props }) {
             width={isOpen ? 150 : 40}
             className={cn(isOpen ? "w-[150px]" : "w-[40px]")}
           /> */}
-          logo
+          <Avatar>
+            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+            <AvatarFallback>CN</AvatarFallback>
+          </Avatar>
         </Link>
         <Button
           variant="ghost"

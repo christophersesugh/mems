@@ -35,3 +35,8 @@ export default function Index() {
     </>
   );
 }
+
+export const menuItems = [
+  { label: "home", href: "/" },
+  { label: "about", href: "about" },
+];

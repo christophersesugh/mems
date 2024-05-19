@@ -1,23 +1,18 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { Outlet } from "@remix-run/react";
 import { cn } from "~/shadcn";
-import { FaHistory, FaUserCircle } from "react-icons/fa";
-import { MdDashboard } from "react-icons/md";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { NavBar, SideBar } from "../navigation";
+import { SideBar } from "../navigation";
+import { authMenuItems } from "./root-layout";
 
-export function AuthAppLayout() {
+export function AuthAppLayout({ user }: any) {
   const [isNavOpen, setIsNavOpen] = React.useState(false);
 
   return (
     <>
-      <NavBar
-        menuItems={menuItems}
-        isNavOpen={isNavOpen}
-        setIsNavOpen={setIsNavOpen}
-      />
       <SideBar
-        menuItems={menuItems}
+        user={user}
+        menuItems={authMenuItems}
         isOpen={isNavOpen}
         setIsOpen={setIsNavOpen}
       />
@@ -32,28 +27,3 @@ export function AuthAppLayout() {
     </>
   );
 }
-
-const menuItems = [
-  {
-    icon: <MdDashboard size={30} />,
-    label: "dashboard",
-    href: "dashboard",
-  },
-  {
-    icon: <IoMdAddCircleOutline size={30} />,
-    label: "create task",
-    href: "create_task",
-  },
-
-  {
-    icon: <FaHistory size={30} />,
-    label: "history",
-    href: "history",
-  },
-
-  {
-    icon: <FaUserCircle size={30} />,
-    label: "profile",
-    href: "profile",
-  },
-];

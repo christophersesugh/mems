@@ -36,7 +36,7 @@ export function MobileNav({
             <Button
               variant="link"
               onClick={handleNavToggle}
-              className="text-lg capitalize"
+              className="text-lg capitalize text-slate-200"
               asChild
             >
               <Link to={item.href}>{item.label}</Link>

@@ -4,7 +4,7 @@ import {
   json,
   redirect,
 } from "@remix-run/node";
-import { Form, useLoaderData } from "@remix-run/react";
+import { Form, useLoaderData, useNavigation } from "@remix-run/react";
 import { Container } from "~/components/container";
 import { Button } from "~/components/ui/button";
 import {
@@ -15,6 +15,7 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { prisma } from "~/utils/prisma.server";
+import { commitSession, getUserSession } from "./sessions";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   const url = new URL(request.url);
@@ -32,6 +33,14 @@ export async function action({ request }: ActionFunctionArgs) {
       where: {
         email,
       },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        rank: true,
+        unit: true,
+        role: true,
+      },
     });
 
     if (!user) {
@@ -46,7 +55,19 @@ export async function action({ request }: ActionFunctionArgs) {
         role,
       },
     });
-    return redirect("/dashboard");
+
+    const session = await getUserSession(request);
+    session.set("currentUser", { userId: user.id, ...user });
+
+    const commitSessionOptions = {
+      headers: {
+        "Set-Cookie": await commitSession(session, {
+          expires: new Date(Date.now() + 1000 * 60 * 60 * 24),
+        }),
+      },
+    };
+
+    return redirect("/dashboard", commitSessionOptions);
   } catch (error) {
     throw new Error("An error occured while creating user, please try again.");
   }
@@ -54,6 +75,10 @@ export async function action({ request }: ActionFunctionArgs) {
 
 export default function Role() {
   const email = useLoaderData<typeof loader>();
+  const navigation = useNavigation();
+  const admin = navigation.formData?.get("role") === "ADMIN";
+  const user = navigation.formData?.get("role") === "USER";
+
   return (
     <Container>
       <Form method="post">
@@ -71,8 +96,9 @@ export default function Role() {
                   value="ADMIN"
                   variant="outline"
                   className="text-lg capitalize"
+                  disabled={admin || user}
                 >
-                  Admin
+                  {admin ? "redirecting..." : "Admin"}
                 </Button>
               </div>
               <div className="flex flex-col space-y-1.5">
@@ -81,8 +107,9 @@ export default function Role() {
                   value="USER"
                   variant="outline"
                   className="text-lg capitalize"
+                  disabled={admin || user}
                 >
-                  Maintainer
+                  {user ? "redirecting..." : "Maintainer"}
                 </Button>
               </div>
             </div>

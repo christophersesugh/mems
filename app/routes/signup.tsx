@@ -1,5 +1,5 @@
 import { LoaderFunctionArgs, redirect } from "@remix-run/node";
-import { Form } from "@remix-run/react";
+import { Form, useNavigation } from "@remix-run/react";
 import { Container } from "~/components/container";
 import { Button } from "~/components/ui/button";
 import {
@@ -26,23 +26,21 @@ export async function action({ request }: LoaderFunctionArgs) {
   const name = String(formData.get("name"));
   const email = String(formData.get("email"));
   const rank = String(formData.get("rank"));
+  const unit = String(formData.get("unit"));
+  const data = { name, email, unit, rank };
   try {
-    await prisma.user.create({
-      data: {
-        name,
-        email,
-        rank,
-      },
-    });
+    await prisma.user.create({ data });
     return redirect(`/role?email=${email}`);
   } catch (error) {
     console.error(error);
-
     throw new Error("An error occured while creating user, please try again.");
   }
 }
 
 export default function Signin() {
+  const navigation = useNavigation();
+
+  const isSubmitting = navigation.formData?.get("intent") === "signup";
   return (
     <Container>
       <Form method="post">
@@ -64,6 +62,10 @@ export default function Signin() {
                 <Input id="email" name="email" placeholder="Eamil" />
               </div>
               <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="unit">Unit</Label>
+                <Input id="unit" name="unit" placeholder="Unit" />
+              </div>
+              <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="rank">Rank</Label>
                 <Select name="rank">
                   <SelectTrigger id="rank">
@@ -80,7 +82,14 @@ export default function Signin() {
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
-            <Button type="submit">Continue</Button>
+            <Button
+              type="submit"
+              name="intent"
+              value="signup"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Continue"}
+            </Button>
           </CardFooter>
         </Card>
       </Form>

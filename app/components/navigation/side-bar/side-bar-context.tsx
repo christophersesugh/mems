@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import * as React from "react";
 export interface SideBarProps {
   menuItems: {
@@ -9,6 +10,7 @@ export interface SideBarProps {
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
   toggleSideBar?: () => void;
   children?: React.ReactNode;
+  user: any;
 }
 
 export const SideBarContext = React.createContext({} as SideBarProps);
@@ -17,10 +19,18 @@ function SideBarProvider({
   menuItems,
   isOpen,
   setIsOpen,
+  user,
   ...props
 }: SideBarProps) {
   const toggleSideBar = () => setIsOpen(!isOpen);
-  const values = { ...props, menuItems, isOpen, setIsOpen, toggleSideBar };
+  const values = {
+    ...props,
+    menuItems,
+    isOpen,
+    setIsOpen,
+    toggleSideBar,
+    user,
+  };
   return <SideBarContext.Provider value={values} {...props} />;
 }
 

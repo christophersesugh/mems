@@ -46,7 +46,7 @@ export function MainNav({
       >
         {/* if a user is authenticated, show the drowpdown menu for mobile nav before the logo */}
         <div className={cn("flex", authApp ? "gap-2" : "")}>
-          {authApp ? (
+          {/* {authApp ? (
             <Button
               onClick={handleNavToggle}
               size="icon"
@@ -58,7 +58,7 @@ export function MainNav({
             >
               <Menu className="h-4 w-4 font-black" />
             </Button>
-          ) : null}
+          ) : null} */}
           <Button variant="ghost" className="text-2xl" asChild>
             <Link to={authApp ? "/dashboard" : "/"}>
               {/* <img
