@@ -9,25 +9,21 @@ import { useSideBar } from "./side-bar-context";
 import { SignOutButton } from "~/components/signout-form";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Avatar, AvatarFallback } from "~/components/ui/avatar";
 
 export function SideBarContent({ ...props }) {
-  const { isOpen, toggleSideBar } = useSideBar();
+  const { isOpen, toggleSideBar, user } = useSideBar();
+
+  const userFallback = user?.name
+    .split(" ")
+    .map((n: string) => n[0])
+    .join("");
   return (
     <>
       <div className="flex-col flex h-32 justify-between items-center gap-4 p-4 bg-gray-300">
         <Link to="/dashboard">
-          {/* <img
-            src={`https://cdn.casbytes.com/assets/${
-              isOpen ? "logo.png" : "icon.png"
-            }`}
-            alt="CASBytes"
-            width={isOpen ? 150 : 40}
-            className={cn(isOpen ? "w-[150px]" : "w-[40px]")}
-          /> */}
           <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
+            <AvatarFallback>{userFallback}</AvatarFallback>
           </Avatar>
         </Link>
         <Button

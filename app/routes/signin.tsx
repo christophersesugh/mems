@@ -14,10 +14,13 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { prisma } from "~/utils/prisma.server";
 import { commitSession, getUserSession } from "./sessions";
+import bcrypt from "bcryptjs";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const email = formData.get("email") as string;
+  const password = formData.get("password") as string;
+
   const user = await prisma.user.findUnique({
     where: { email },
     select: {
@@ -27,11 +30,17 @@ export async function action({ request }: ActionFunctionArgs) {
       rank: true,
       unit: true,
       role: true,
+      passwordHash: true,
     },
   });
 
   if (!user) {
     return new Error("Invalid email.");
+  }
+
+  const correctPassword = bcrypt.compareSync(password, user.passwordHash);
+  if (!correctPassword) {
+    throw new Error("Invalid credentials");
   }
 
   const session = await getUserSession(request);
@@ -64,7 +73,16 @@ export default function Signin() {
             <div className="grid w-full items-center gap-8">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" placeholder="Eamil" />
+                <Input id="email" name="email" placeholder="Eamil" required />
+              </div>
+              <div className="flex flex-col space-y-1.5">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  name="password"
+                  placeholder="Password"
+                  required
+                />
               </div>
             </div>
           </CardContent>
