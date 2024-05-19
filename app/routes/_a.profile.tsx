@@ -26,6 +26,9 @@ import { units } from "~/constants/units";
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
     const user = await getUser(request);
+
+    console.log(user);
+
     return user as ICurrentUser;
   } catch (error) {
     throw new Error("Error fetching user.");
@@ -34,7 +37,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function ProfileRoute() {
   const user = useLoaderData() as ICurrentUser;
-  console.log(user);
 
   const navigation = useNavigation();
   const isSubmitting = navigation.formData?.get("intent") === "update";
