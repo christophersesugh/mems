@@ -3,4 +3,19 @@ export const units = [
   "Kalapazin Kaduna",
 ];
 
-export const ranks = ["cadet", "general"];
+export const ranks = [
+  "General",
+  "Lt General",
+  "Major General",
+  "Brigadier General",
+  "Colonel",
+  "Lt Colonel",
+  "Major",
+  "Captain",
+  "Lieutenant",
+  "2nd Lieutenant",
+  "Cadet",
+  "AWO",
+  "MWO",
+  "Warrant officer",
+];

@@ -12,7 +12,7 @@ import {
 } from "~/components/ui/card";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { getUser } from "./sessions";
+import { ICurrentUser, getUser } from "./sessions";
 import { PageTitle } from "~/components/page-title";
 import {
   Select,
@@ -26,14 +26,14 @@ import { units } from "~/constants/units";
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
     const user = await getUser(request);
-    return user;
+    return user as ICurrentUser;
   } catch (error) {
     throw new Error("Error fetching user.");
   }
 }
 
 export default function ProfileRoute() {
-  const user = useLoaderData();
+  const user = useLoaderData() as ICurrentUser;
   console.log(user);
 
   const navigation = useNavigation();
