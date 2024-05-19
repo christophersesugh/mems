@@ -28,10 +28,8 @@ export async function action({ request }: ActionFunctionArgs) {
   const email = String(formData.get("email"));
   const role = String(formData.get("role"));
 
-  console.log(email, role);
-
   try {
-    const user = await prisma.user.findFirst({
+    const exUser = await prisma.user.findFirst({
       where: {
         email,
       },
@@ -45,13 +43,13 @@ export async function action({ request }: ActionFunctionArgs) {
       },
     });
 
-    if (!user) {
+    if (!exUser) {
       throw new Error("User not found");
     }
 
-    await prisma.user.update({
+    const user = await prisma.user.update({
       where: {
-        id: user.id,
+        id: exUser.id,
       },
       data: {
         role,

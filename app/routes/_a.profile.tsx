@@ -5,7 +5,6 @@ import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -26,9 +25,6 @@ import { units } from "~/constants/units";
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
     const user = await getUser(request);
-
-    console.log(user);
-
     return user as ICurrentUser;
   } catch (error) {
     throw new Error("Error fetching user.");
@@ -48,9 +44,6 @@ export default function ProfileRoute() {
         <Card className="max-w-lg mx-auto">
           <CardHeader>
             <CardTitle>Profile</CardTitle>
-            <CardDescription>
-              {/* Easily assign tasks to maintainers. */}
-            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid w-full items-center gap-8">
