@@ -18,4 +18,9 @@ export const ranks = [
   "AWO",
   "MWO",
   "Warrant officer",
+  "Sergeant",
+  "Corporal",
+  "Lance Corporal",
+  "Private",
+  "Recruit",
 ];
