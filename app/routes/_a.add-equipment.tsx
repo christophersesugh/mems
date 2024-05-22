@@ -5,7 +5,6 @@ import {
 } from "@remix-run/node";
 import { Container } from "~/components/container";
 import { PageTitle } from "~/components/page-title";
-import { TaskForm } from "~/components/task-form";
 import { getUser } from "./sessions";
 import { useLoaderData, useNavigation } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
@@ -36,7 +35,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const intent = formData.get("intent");
-  const creator = String(formData.get("creator"));
+  const creatorId = String(formData.get("creator"));
   const name = formData.get("name");
   const unit = String(formData.get("unit"));
   const description = formData.get("description");
@@ -53,7 +52,7 @@ export async function action({ request }: ActionFunctionArgs) {
       unit,
       creator: {
         connect: {
-          id: creator,
+          id: creatorId,
         },
       },
       quantity,

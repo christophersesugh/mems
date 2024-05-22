@@ -35,7 +35,7 @@ model Task {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   equipmentId String     @db.ObjectId
-  equipment   Equipment  @relation(fields: [equipmentId], references: [id])
+  equipment   Equipment  @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
   assignerId  String     @db.ObjectId
   assigner    Assigner   @relation(fields: [assignerId], references: [id])
   assignees   Assignee[]

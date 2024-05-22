@@ -73,7 +73,7 @@ export function EquipmentForm({
           id="quantity"
           name="quantity"
           placeholder="Quantity"
-          value={equipment?.quantity ?? ""}
+          defaultValue={equipment?.quantity ?? ""}
           required
         />
       </div>
