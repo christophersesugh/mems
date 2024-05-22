@@ -67,7 +67,7 @@ export async function action({ request }: ActionFunctionArgs) {
       },
     };
 
-    return redirect("/dashboard", commitSessionOptions);
+    return redirect("/equipments", commitSessionOptions);
   } catch (error) {
     throw new Error("An error occured while creating user, please try again.");
   }

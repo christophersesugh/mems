@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,16 +8,21 @@ datasource db {
 }
 
 model User {
-  id           String     @id @default(auto()) @map("_id") @db.ObjectId
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
   name         String
-  email        String     @unique
+  email        String @unique
   unit         String
   rank         String
-  role         String     @default("USER")
+  role         String @default("USER") // USER, ADMIN
   passwordHash String
-  assignee     Assignee[]
-  assigner     Assigner[]
-  comments     Comment[]
+
+  comments             Comment[]
+  assignees            Assignee[]
+  assigners            Assigner[]
+  signOuts             SignOut[]
+  signIns              SignIn[]
+  createdEquipments    Equipment[] @relation("EquipmentCreator")
+  maintainedEquipments Equipment[] @relation("EquipmentMaintainer")
 }
 
 model Task {
@@ -35,15 +34,18 @@ model Task {
   status      String     @default("TODO") // TODO, IN_PROGRESS, COMPLETED
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
+  equipmentId String     @db.ObjectId
+  equipment   Equipment  @relation(fields: [equipmentId], references: [id])
+  assignerId  String     @db.ObjectId
+  assigner    Assigner   @relation(fields: [assignerId], references: [id])
   assignees   Assignee[]
-  assigner    Assigner[]
   comments    Comment[]
 }
 
 model Comment {
   id      String @id @default(auto()) @map("_id") @db.ObjectId
-  taskId  String @map("task_id") @db.ObjectId
-  userId  String @map("user_id") @db.ObjectId
+  taskId  String @db.ObjectId
+  userId  String @db.ObjectId
   comment String
   task    Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user    User   @relation(fields: [userId], references: [id])
@@ -51,16 +53,54 @@ model Comment {
 
 model Assignee {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
-  taskId String @map("task_id") @db.ObjectId
-  userId String @map("user_id") @db.ObjectId
+  taskId String @db.ObjectId
+  userId String @db.ObjectId
   task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id])
 }
 
 model Assigner {
   id     String @id @default(auto()) @map("_id") @db.ObjectId
-  taskId String @map("task_id") @db.ObjectId
-  userId String @map("user_id") @db.ObjectId
-  task   Task   @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  userId String @db.ObjectId
+  // taskId String @db.ObjectId
+  task   Task[]
   user   User   @relation(fields: [userId], references: [id])
+}
+
+model Equipment {
+  id              String    @id @default(auto()) @map("_id") @db.ObjectId
+  name            String
+  description     String
+  unit            String
+  quantity        Int
+  status          String    @default("AVAILABLE") // AVAILABLE, IN_USE, MAINTENANCE
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  signOuts        SignOut[]
+  signIns         SignIn[]
+  tasks           Task[]
+  taskId          String?   @db.ObjectId
+  maintainerId    String?   @db.ObjectId
+  creatorId       String    @db.ObjectId
+  creator         User?     @relation("EquipmentCreator", fields: [creatorId], references: [id])
+  maintainer      User?     @relation("EquipmentMaintainer", fields: [maintainerId], references: [id])
+  lastMaintenance DateTime?
+}
+
+model SignOut {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  equipmentId String    @db.ObjectId
+  userId      String    @db.ObjectId
+  date        DateTime  @default(now())
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id])
+}
+
+model SignIn {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  equipmentId String    @db.ObjectId
+  userId      String    @db.ObjectId
+  date        DateTime  @default(now())
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id])
 }

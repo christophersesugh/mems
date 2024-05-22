@@ -25,6 +25,7 @@ type TaskFormProps = {
   user: ICurrentUser;
   users: any;
   task?: any;
+  equipments: any;
   submitButton: React.ReactNode;
 };
 
@@ -34,6 +35,7 @@ export function TaskForm({
   action,
   user,
   users,
+  equipments,
   task,
 }: TaskFormProps) {
   const [date, setDate] = React.useState<Date>(
@@ -83,6 +85,21 @@ export function TaskForm({
           readOnly
           required
         />
+      </div>
+      <div className="flex flex-col space-y-1.5">
+        <Label htmlFor="equipment">Equipment</Label>
+        <Select name="equipment">
+          <SelectTrigger id="equipment">
+            <SelectValue placeholder="Select equipment" />
+          </SelectTrigger>
+          <SelectContent position="popper">
+            {equipments.map((e: any) => (
+              <SelectItem key={e.id} value={e.id}>
+                {e.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <input type="hidden" name="date" value={String(date)} />
       <div className="flex flex-col space-y-1.5">
@@ -135,7 +152,7 @@ export function TaskForm({
             <SelectValue placeholder="Select assignee(s)" />
           </SelectTrigger>
           <SelectContent position="popper">
-            {users.map((u: any) => (
+            {users?.map((u: any) => (
               <SelectItem key={u.id} value={u.id}>
                 {u.name}
               </SelectItem>

@@ -19,41 +19,43 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     }
     const currentUser = await getUser(request);
     if (currentUser.role !== "ADMIN") {
-      return redirect("/dashboard");
+      return redirect("/tasks");
     }
-    const users = await prisma.user.findMany({
-      where: {
-        NOT: {
-          id: currentUser.userId,
-          role: "ADMIN",
-        },
-        unit: currentUser.unit,
-      },
-    });
 
-    const task = await prisma.task.findUnique({
-      where: {
-        id: taskId,
-        assigner: {
-          some: {
+    const [users, task, equipments] = await Promise.all([
+      prisma.user.findMany({
+        where: {
+          NOT: {
+            id: currentUser.userId,
+            role: "ADMIN",
+          },
+          unit: currentUser.unit,
+        },
+      }),
+      prisma.task.findUnique({
+        where: {
+          id: taskId,
+          assigner: {
             userId: currentUser.userId,
           },
         },
-      },
-      include: {
-        assignees: {
-          include: {
-            user: true,
+        include: {
+          assignees: {
+            include: {
+              user: true,
+            },
+          },
+          assigner: {
+            include: {
+              user: true,
+            },
           },
         },
-        assigner: {
-          include: {
-            user: true,
-          },
-        },
-      },
-    });
-    return { currentUser, users, task };
+      }),
+      prisma.equipment.findMany(),
+    ]);
+
+    return { currentUser, users, task, equipments };
   } catch (error) {
     throw new Error("Error getting user.");
   }
@@ -106,7 +108,8 @@ export async function action({ request }: ActionFunctionArgs) {
 }
 
 export default function EditTaskRoute() {
-  const { users, currentUser, task } = useLoaderData<typeof loader>();
+  const { users, currentUser, task, equipments } =
+    useLoaderData<typeof loader>();
 
   const navigation = useNavigation();
   const isEditing = navigation.formData?.get("intent") === "edit";
@@ -117,6 +120,7 @@ export default function EditTaskRoute() {
       <TaskForm
         method="post"
         action={`/edit-task/${task?.id}`}
+        equipments={equipments}
         user={currentUser}
         users={users}
         task={task}

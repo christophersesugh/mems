@@ -10,9 +10,10 @@ import {
   DialogTitle,
 } from "../ui/dialog";
 import { Button } from "../ui/button";
-import { MdDashboard } from "react-icons/md";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { FaUserCircle } from "react-icons/fa";
+import { MdAddTask } from "react-icons/md";
+import { IoIosAddCircleOutline } from "react-icons/io";
+import { FaTools, FaUserCircle } from "react-icons/fa";
+import { GoTasklist } from "react-icons/go";
 
 export function RootLayout() {
   const [isNavOpen, setIsNavOpen] = React.useState(false);
@@ -58,14 +59,25 @@ export const menuItems = [
 
 export const authMenuItems = [
   {
-    icon: <MdDashboard size={30} />,
-    label: "dashboard",
-    href: "dashboard",
+    icon: <FaTools size={30} />,
+    label: "equipments",
+    href: "equipments",
   },
   {
-    icon: <IoMdAddCircleOutline size={30} />,
-    label: "create task",
-    href: "create",
+    icon: <GoTasklist size={30} />,
+    label: "tasks",
+    href: "tasks",
+  },
+  {
+    icon: <IoIosAddCircleOutline size={30} />,
+    label: "add equipment",
+    href: "add-equipment",
+  },
+
+  {
+    icon: <MdAddTask size={30} />,
+    label: "assign task",
+    href: "add-task",
   },
   {
     icon: <FaUserCircle size={30} />,

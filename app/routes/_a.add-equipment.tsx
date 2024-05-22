@@ -10,79 +10,71 @@ import { getUser } from "./sessions";
 import { useLoaderData, useNavigation } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { prisma } from "~/utils/prisma.server";
+import { EquipmentForm } from "~/components/equipment-form";
 
 export async function loader({ request }: LoaderFunctionArgs) {
   try {
     const currentUser = await getUser(request);
     if (currentUser.role !== "ADMIN") {
-      return redirect("/dashboard");
+      return redirect("/equipments");
     }
-    const users = await prisma.user.findMany({
-      where: {
-        NOT: {
-          id: currentUser.userId,
-          role: "ADMIN",
-        },
-        unit: currentUser.unit,
-      },
-    });
-    return { currentUser, users };
+    // const users = await prisma.user.findMany({
+    //   where: {
+    //     NOT: {
+    //       id: currentUser.userId,
+    //       role: "ADMIN",
+    //     },
+    //     unit: currentUser.unit,
+    //   },
+    // });
+    return { currentUser };
   } catch (error) {
-    throw new Error("Error getting user.");
+    throw new Error("Error getting current user.");
   }
 }
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const intent = formData.get("intent");
-  const assigner = String(formData.get("assigner"));
-  const title = formData.get("title");
+  const creator = String(formData.get("creator"));
+  const name = formData.get("name");
   const unit = String(formData.get("unit"));
   const description = formData.get("description");
-  const date = new Date(formData.get("date") as string);
-  const assignees = String(formData.get("assignees"))
-    .split(",")
-    .filter(Boolean);
+  const quantity = Number(formData.get("quantity"));
 
   if (intent !== "create") {
     throw new Error("Invalid intent");
   }
 
-  await prisma.task.create({
+  await prisma.equipment.create({
     data: {
-      title: title as string,
+      name: name as string,
       description: description as string,
       unit,
-      date,
-      assigner: {
-        create: {
-          user: { connect: { id: assigner } },
+      creator: {
+        connect: {
+          id: creator,
         },
       },
-      assignees: {
-        create: assignees.map((assignee) => ({
-          user: { connect: { id: assignee } },
-        })),
-      },
+      quantity,
     },
   });
 
-  return redirect("/dashboard");
+  return redirect("/equipments");
 }
 
-export default function CreateTaskRoute() {
-  const { users, currentUser } = useLoaderData<typeof loader>();
+export default function AddEquipmentRoute() {
+  const { currentUser } = useLoaderData<typeof loader>();
 
   const navigation = useNavigation();
   const isCreating = navigation.formData?.get("intent") === "create";
   return (
     <Container className="max-w-3xl">
-      <PageTitle title="Create task" />
-      <TaskForm
+      <PageTitle title="Add Equipment" />
+      <EquipmentForm
         method="post"
-        action="/create"
+        action="/add-equipment"
         user={currentUser}
-        users={users}
         submitButton={
           <Button
             name="intent"

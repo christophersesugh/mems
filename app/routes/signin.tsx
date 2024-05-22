@@ -1,11 +1,11 @@
 import { ActionFunctionArgs, redirect } from "@remix-run/node";
-import { Form, useNavigation } from "@remix-run/react";
+import { Form, useActionData, useNavigation } from "@remix-run/react";
 import { Container } from "~/components/container";
 import { Button } from "~/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
+  // CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -15,11 +15,29 @@ import { Label } from "~/components/ui/label";
 import { prisma } from "~/utils/prisma.server";
 import { commitSession, getUserSession } from "./sessions";
 import bcrypt from "bcryptjs";
+import { z } from "zod";
 
 export async function action({ request }: ActionFunctionArgs) {
   const formData = await request.formData();
   const email = formData.get("email") as string;
   const password = formData.get("password") as string;
+
+  const fData = {
+    email,
+    password,
+  };
+
+  const signinSchema = z.object({
+    email: z
+      .string({
+        required_error: "Email is required",
+      })
+      .email(),
+
+    password: z.string().min(6, {
+      message: "Password must be atleast 6 characters.",
+    }),
+  });
 
   const user = await prisma.user.findUnique({
     where: { email },
@@ -34,13 +52,27 @@ export async function action({ request }: ActionFunctionArgs) {
     },
   });
 
-  if (!user) {
-    return new Error("Invalid email.");
+  const formError: { error: string | null } = {
+    error: null,
+  };
+
+  const result = signinSchema.safeParse(fData);
+
+  if (!result.success) {
+    return { formError: null, fieldErrors: result.error.format() };
   }
 
-  const correctPassword = bcrypt.compareSync(password, user.passwordHash);
+  if (!user) {
+    formError.error = "Invalid credentials.";
+  }
+
+  const correctPassword = bcrypt.compareSync(password, user!.passwordHash);
   if (!correctPassword) {
-    throw new Error("Invalid credentials");
+    formError.error = "Invalid credentials.";
+  }
+
+  if (formError.error) {
+    return { formError, fieldErrors: null };
   }
 
   const session = await getUserSession(request);
@@ -54,11 +86,12 @@ export async function action({ request }: ActionFunctionArgs) {
     },
   };
 
-  return redirect("/dashboard", commitSessionOptions);
+  return redirect("/equipments", commitSessionOptions);
 }
 
 export default function Signin() {
   const navigation = useNavigation();
+  const actionData = useActionData<typeof action>();
 
   const isSubmitting = navigation.formData?.get("intent") === "signin";
   return (
@@ -67,24 +100,34 @@ export default function Signin() {
         <Card className="max-w-lg mx-auto">
           <CardHeader>
             <CardTitle>Sign In</CardTitle>
-            <CardDescription>Generate magic link</CardDescription>
+            {/* <CardDescription>Generate magic link</CardDescription> */}
           </CardHeader>
           <CardContent>
             <div className="grid w-full items-center gap-8">
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="email">Email</Label>
-                <Input id="email" name="email" placeholder="Eamil" required />
+                <Input id="email" name="email" placeholder="Eamil" />
+                {actionData?.fieldErrors?.email ? (
+                  <p className="text-red-500">
+                    {actionData.fieldErrors?.email?._errors[0]}
+                  </p>
+                ) : null}
               </div>
               <div className="flex flex-col space-y-1.5">
                 <Label htmlFor="password">Password</Label>
-                <Input
-                  id="password"
-                  name="password"
-                  placeholder="Password"
-                  required
-                />
+                <Input id="password" name="password" placeholder="Password" />
+                {actionData?.fieldErrors?.password ? (
+                  <p className="text-red-500">
+                    {actionData.fieldErrors?.password?._errors[0]}
+                  </p>
+                ) : null}
               </div>
             </div>
+            {actionData?.formError?.error ? (
+              <p className="text-red-500 mt-4">
+                {actionData?.formError?.error}
+              </p>
+            ) : null}
           </CardContent>
           <CardFooter className="flex justify-between">
             <Button

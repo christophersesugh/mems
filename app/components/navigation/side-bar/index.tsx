@@ -18,7 +18,7 @@ export function SideBar({
   ...props
 }: SideBarProps) {
   function admin(href: string, role: string) {
-    return href.includes("create") && role === "USER";
+    return href.startsWith("add") && role === "USER";
   }
   return (
     <SideBarProvider
