@@ -5,6 +5,13 @@ import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { ICurrentUser } from "~/routes/sessions";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 type EquipmentFormProps = {
   method: "post" | "get";
@@ -77,6 +84,25 @@ export function EquipmentForm({
           required
         />
       </div>
+      {equipment ? (
+        <div className="flex flex-col space-y-1.5">
+          <Label htmlFor="status">Status</Label>
+          <Select name="status">
+            <SelectTrigger id="status">
+              <SelectValue placeholder={equipment.status} />
+            </SelectTrigger>
+            <SelectContent position="popper">
+              {["AVAILABLE", "IN_USE", "MAINTENANCE"].map(
+                (s: string, i: number) => (
+                  <SelectItem key={i} value={s}>
+                    {s}
+                  </SelectItem>
+                )
+              )}
+            </SelectContent>
+          </Select>
+        </div>
+      ) : null}
       {submitButton}
     </Form>
   );

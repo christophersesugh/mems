@@ -1,4 +1,8 @@
-import { LoaderFunctionArgs, redirect } from "@remix-run/node";
+import {
+  ActionFunctionArgs,
+  LoaderFunctionArgs,
+  redirect,
+} from "@remix-run/node";
 import { useLoaderData, useNavigation } from "@remix-run/react";
 import { Container } from "~/components/container";
 import { EquipmentForm } from "~/components/equipment-form";
@@ -41,15 +45,51 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
   } catch (error) {
     console.error(error);
 
-    throw new Error(error);
+    throw new Error("Error getting user.");
   }
+}
+
+export async function action({ request }: ActionFunctionArgs) {
+  const formData = await request.formData();
+  const intent = formData.get("intent");
+  const name = formData.get("name");
+  const unit = String(formData.get("unit"));
+  const description = formData.get("description");
+  const quantity = Number(formData.get("quantity"));
+  const creatorId = String(formData.get("creator"));
+
+  if (intent !== "edit") {
+    throw new Error("Invalid intent");
+  }
+  const equipmentId = String(formData.get("equipmentId"));
+  const status = String(formData.get("status") || "AVAILABLE");
+
+  await prisma.equipment.update({
+    where: {
+      id: equipmentId,
+    },
+    data: {
+      name: name as string,
+      description: description as string,
+      unit,
+      creator: {
+        connect: {
+          id: creatorId,
+        },
+      },
+      quantity,
+      status,
+    },
+  });
+
+  return redirect("/equipments");
 }
 
 export default function EditEquipmentRoute() {
   const { currentUser, equipment } = useLoaderData<typeof loader>();
 
   const navigation = useNavigation();
-  const isCreating = navigation.formData?.get("intent") === "create";
+  const isCreating = navigation.formData?.get("intent") === "edit";
   return (
     <Container className="max-w-3xl">
       <PageTitle title="Edit Equipment" />
@@ -61,7 +101,7 @@ export default function EditEquipmentRoute() {
         submitButton={
           <Button
             name="intent"
-            value="create"
+            value="edit"
             type="submit"
             disabled={isCreating}
           >

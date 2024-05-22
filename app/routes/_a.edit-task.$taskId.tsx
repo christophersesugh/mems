@@ -104,7 +104,7 @@ export async function action({ request }: ActionFunctionArgs) {
     },
   });
 
-  return redirect("/dashboard");
+  return redirect("/tasks");
 }
 
 export default function EditTaskRoute() {

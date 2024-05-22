@@ -78,11 +78,15 @@ model Equipment {
   updatedAt       DateTime  @updatedAt
   signOuts        SignOut[]
   signIns         SignIn[]
+  lastUserSignIn  String?
+  lastUserSignOut String?
+  lastSignInDate  DateTime?
+  lastSignOutDate DateTime?
   tasks           Task[]
   taskId          String?   @db.ObjectId
   maintainerId    String?   @db.ObjectId
   creatorId       String    @db.ObjectId
-  creator         User?     @relation("EquipmentCreator", fields: [creatorId], references: [id])
+  creator         User      @relation("EquipmentCreator", fields: [creatorId], references: [id])
   maintainer      User?     @relation("EquipmentMaintainer", fields: [maintainerId], references: [id])
   lastMaintenance DateTime?
 }
