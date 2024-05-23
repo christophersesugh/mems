@@ -56,36 +56,45 @@ export async function action({ request }: ActionFunctionArgs) {
   }
 
   try {
-    await prisma.task.create({
-      data: {
-        title: title as string,
-        description: description as string,
-        unit,
-        date,
-        equipment: {
-          connect: {
-            id: equipmentId,
-          },
-        },
-        assigner: {
-          create: {
-            user: {
-              connect: { id: assigner }, // Ensure this ID exists in User model
+    await Promise.all([
+      prisma.task.create({
+        data: {
+          title: title as string,
+          description: description as string,
+          unit,
+          date,
+          equipment: {
+            connect: {
+              id: equipmentId,
             },
           },
+          assigner: {
+            create: {
+              user: {
+                connect: { id: assigner }, // Ensure this ID exists in User model
+              },
+            },
+          },
+          assignees: {
+            create: assignees.map((assignee) => ({
+              user: { connect: { id: assignee } },
+            })),
+          },
         },
-        assignees: {
-          create: assignees.map((assignee) => ({
-            user: { connect: { id: assignee } },
-          })),
+      }),
+
+      prisma.equipment.update({
+        where: {
+          id: equipmentId,
         },
-      },
-    });
+        data: {
+          status: "MAINTENANCE",
+        },
+      }),
+    ]);
 
     return redirect("/tasks");
   } catch (error) {
-    console.error(error);
-
     throw new Error("Error creating task.");
   }
 }

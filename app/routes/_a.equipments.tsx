@@ -126,7 +126,6 @@ export async function action({ request }: ActionFunctionArgs) {
     }
     return null;
   } catch (error) {
-    console.error(error);
     throw new Error("Unknown server error, please try again.");
   }
 }
@@ -296,7 +295,8 @@ function EquipmentDialog({ equipment }: any) {
           </p>
           <p>
             <span className="text-slate-500">Last maintained on:</span>{" "}
-            {equipment?.lastMaintainedAt ?? "Not maintained yet"}
+            {format(new Date(equipment?.lastMaintenance), "do MMMM, yyyy") ??
+              "Not maintained yet"}
           </p>
 
           <p>
