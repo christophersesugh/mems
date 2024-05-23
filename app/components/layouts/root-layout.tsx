@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, Outlet, useMatches } from "@remix-run/react";
-import { Footer } from "../footer";
+// import { Footer } from "../footer";
 import { NavBar } from "../navigation";
 import {
   Dialog,
@@ -47,7 +47,7 @@ export function RootLayout() {
           </DialogClose>
         </div>
       </DialogContent>
-      <Footer />
+      {/* <Footer /> */}
     </Dialog>
   );
 }
